@@ -17,7 +17,13 @@ ARG WEBOTS_VERSION=R2021a
 ARG WEBOTS_PACKAGE_PREFIX=_ubuntu-18.04
 
 # Install Webots runtime dependencies
-RUN apt update && apt install --yes wget && rm -rf /var/lib/apt/lists/
+RUN rm /etc/apt/sources.list.d/cuda.list
+RUN rm /etc/apt/sources.list.d/nvidia-ml.list
+RUN apt-key del 7fa2af80
+RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/3bf863cc.pub
+RUN apt update
+RUN apt install --yes --force-yes wget 
+RUN rm -rf /var/lib/apt/lists/
 RUN wget https://raw.githubusercontent.com/cyberbotics/webots/master/scripts/install/linux_runtime_dependencies.sh
 RUN chmod +x linux_runtime_dependencies.sh && ./linux_runtime_dependencies.sh && rm ./linux_runtime_dependencies.sh && rm -rf /var/lib/apt/lists/
 
@@ -36,6 +42,7 @@ ENV PATH /usr/local/webots:${PATH}
 # Install ros melodic with moveit
 # ------------------------------------------------------------------
 RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' && apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 && apt update && apt install ros-melodic-desktop-full -y
+
 WORKDIR /root
 
 RUN apt-get update && apt-get install -y \
@@ -43,7 +50,8 @@ RUN apt-get update && apt-get install -y \
     ros-melodic-actionlib \
     ros-melodic-actionlib-tutorials \
     ros-melodic-control-msgs \
-    ros-melodic-roscpp \    
+    ros-melodic-roscpp \   
+    python-rosdep \ 
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /root/catkin_ws/src && cd /root/catkin_ws
@@ -62,3 +70,7 @@ RUN echo "source /root/catkin_ws/devel/setup.bash" >> /root/.bashrc
 EXPOSE 11311
 
 WORKDIR /root
+
+RUN rosdep init && rosdep update && cd /root/catkin_ws \
+    && rosdep install -r --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y -i --verbose \
+    && apt-get update -y && apt-get upgrade -y && apt-get install -y gedit

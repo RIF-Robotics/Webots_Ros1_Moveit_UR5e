@@ -1,0 +1,7 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/psuresh/catkin_isolated_ws/devel_isolated/python_orocos_kdl/lib/python3/dist-packages",
+        "/home/psuresh/catkin_ws/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ]
+}
