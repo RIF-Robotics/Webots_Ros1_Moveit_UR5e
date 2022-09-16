@@ -3,8 +3,8 @@ version: "3.4"
 services:
   dev-nvidia:
     build:
-        context: ../
-        dockerfile: ./Webots_Ros1_Moveit_UR5e/Dockerfile
+        context: .
+        dockerfile: Dockerfile
         args:
           USER_ID: ${USER_ID:-0}
           GROUP_ID: ${GROUP_ID:-0}
@@ -21,3 +21,8 @@ services:
       - XAUTHORITY=/tmp/.docker.xauth
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=all
+    volumes:
+       - ./src:/root/catkin_ws/src
+      #  - ./build:/root/catkin_ws/build
+      #  - ./devel:/root/catkin_ws/devel
+      #  - ./install:/root/catkin_ws/install

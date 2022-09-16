@@ -10,5 +10,4 @@
     <arg name="no-gui" value="$(arg no-gui)"/>
     <arg name="world" value="$(find ur_e_webots)/worlds/$(arg world).wbt"/>
   </include>
-
 </launch>
